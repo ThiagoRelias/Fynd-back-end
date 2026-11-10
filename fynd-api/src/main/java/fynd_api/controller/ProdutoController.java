@@ -1,52 +1,49 @@
 package fynd_api.controller;
 
+import fynd_api.dto.ProdutoRequestDTO;
 import fynd_api.model.Produto;
-import fynd_api.repository.ProdutoRepository;
+import fynd_api.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.aspectj.apache.bcel.Repository;
-import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
 
-    private final ProdutoRepository repository;
+    private final ProdutoService service;
 
-    public ProdutoController(ProdutoRepository repository) {
-        this.repository = repository;
+    public ProdutoController(ProdutoService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<Produto> listar() {
+        return service.listar();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> buscar (@PathVariable Long id) {
-        return repository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public Produto buscar(@PathVariable Long id) {
+        return service.buscarPorId(id);
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Produto adicionar (@RequestBody Produto produto) {
-        return repository.save(produto);
+    public Produto adicionar(@Valid @RequestBody ProdutoRequestDTO dados) {
+        return service.criar(dados);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id,
-                                             @Valid @RequestBody Produto dados) {
-        return repository.findById(id).map(p -> {
-            p.setNome(dados.getNome());
-            p.setDescricao(dados.getDescricao());
-            p.setQuantidade(dados.getQuantidade());
-            p.setImagemUrl(dados.getImagemUrl());
-            return ResponseEntity.ok(repository.save(p));
-        }).orElse(ResponseEntity.notFound().build());
+    public Produto atualizar(@PathVariable Long id,
+                             @Valid @RequestBody ProdutoRequestDTO dados) {
+        return service.atualizar(id, dados);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable Long id) {
-        if (!repository.existsById(id)) return ResponseEntity.notFound().build();
-        repository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluir(@PathVariable Long id) {
+        service.excluir(id);
     }
 }
