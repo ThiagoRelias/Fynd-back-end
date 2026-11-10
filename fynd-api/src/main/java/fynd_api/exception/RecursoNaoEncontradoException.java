@@ -1,7 +1,7 @@
 package fynd_api.exception;
 
 public class RecursoNaoEncontradoException extends RuntimeException {
-  public RecursoNaoEncontradoException(String message) {
-    super(message);
-  }
+    public RecursoNaoEncontradoException(Long id) {
+        super("Item não encontrado com id " + id);
+    }
 }
