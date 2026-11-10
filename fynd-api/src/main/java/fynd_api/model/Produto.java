@@ -1,44 +1,47 @@
 package fynd_api.model;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 public class Produto {
-    @Setter
-    @Getter
+
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "O nome é obrigatorio")
+    @Column(nullable = false)
     private String nome;
 
-    @NotBlank(message = "Descrição é obrigatória")
+    @Column(nullable = false)
     private String descricao;
 
-    @NotBlank(message = "Quantidade é obrigatória")
-    @PositiveOrZero
-    private String quantidade;
+    @Column(nullable = false)
+    private Integer quantidade;
 
-    @NotBlank(message = "Imagem é obrigatória")
-    private String ImagemUrl;
+    @Column(nullable = false)
+    private String imagemUrl;
 
-    @NotBlank(message = "Encontrado em é obrigatório")
-    private String EncontradoEm;
+    @Column(nullable = false)
+    private String encontradoEm;
 
-    @NotBlank(message = "Categoria é obrigatória")
-    private String Categoria;
+    @Column(nullable = false)
+    private String categoria;
 
-    @NotBlank(message = "Data é obrigatória")
+    @Column(nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatusObjeto status;
 
+    @PrePersist
+    public void aoCriar() {
+        this.dataCadastro = LocalDateTime.now();
+    }
 }
-
