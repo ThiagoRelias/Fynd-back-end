@@ -46,7 +46,7 @@ public class Objeto {
     public void prePersist(){
         this.datacadastro = LocalDateTime.now();
         if(this.dataDevolucao == null){
-        this.status = StatusObjeto.AGUARDADNDO_DONO;
+        this.status = StatusObjeto.AGUARDANDO_DONO;
         }
     }
 }
