@@ -1,6 +1,8 @@
 package fynd_api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
@@ -34,7 +36,8 @@ public class Objeto {
     private String LocalEncontrado;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 20)
     private StatusObjeto status;
 
     @Column(updatable = false)

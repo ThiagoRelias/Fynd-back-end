@@ -47,9 +47,19 @@ public class ProdutoService {
         produto.setNome(dados.nome());
         produto.setDescricao(dados.descricao());
         produto.setQuantidade(dados.quantidade());
-        produto.setImagemUrl(dados.imagemUrl());
+        produto.setImagemUrl(caminhoLocal(dados.imagemUrl()));
         produto.setEncontradoEm(dados.encontradoEm());
         produto.setCategoria(dados.categoria());
         produto.setStatus(dados.status());
+    }
+
+    private String caminhoLocal(String url) {
+        for (String prefixo : new String[]{"/api/imagens/", "/imagens/"}) {
+            int inicio = url.indexOf(prefixo);
+            if (inicio >= 0) {
+                return url.substring(inicio);
+            }
+        }
+        return url;
     }
 }

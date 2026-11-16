@@ -1,6 +1,10 @@
 package fynd_api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fynd_api.config.UploadConfig;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +28,7 @@ public class Produto {
     @Column(nullable = false)
     private Integer quantidade;
 
+    @JsonSerialize(using = UploadConfig.class)
     @Column(nullable = false)
     private String imagemUrl;
 
@@ -37,7 +42,8 @@ public class Produto {
     private LocalDateTime dataCadastro;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 20)
     private StatusObjeto status;
 
     @PrePersist
