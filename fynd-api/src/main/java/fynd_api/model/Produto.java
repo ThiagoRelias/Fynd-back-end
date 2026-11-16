@@ -1,5 +1,7 @@
 package fynd_api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import fynd_api.config.UploadConfig;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -26,6 +28,7 @@ public class Produto {
     @Column(nullable = false)
     private Integer quantidade;
 
+    @JsonSerialize(using = UploadConfig.class)
     @Column(nullable = false)
     private String imagemUrl;
 

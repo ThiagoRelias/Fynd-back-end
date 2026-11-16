@@ -1,25 +1,21 @@
 package fynd_api.config;
 
-import fynd_api.service.ImagemService;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-@Configuration
-public class UploadConfig implements WebMvcConfigurer {
+import java.io.IOException;
 
-    private final ImagemService imagemService;
-
-    public UploadConfig(ImagemService imagemService) {
-        this.imagemService = imagemService;
-    }
+public class UploadConfig extends JsonSerializer<String> {
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String local = imagemService.getPasta().toUri().toString();
-        if (!local.endsWith("/")) {
-            local = local + "/";
+    public void serialize(String valor, JsonGenerator gerador, SerializerProvider provider) throws IOException {
+        if (valor.startsWith("http") || RequestContextHolder.getRequestAttributes() == null) {
+            gerador.writeString(valor);
+            return;
         }
-        registry.addResourceHandler("/uploads/**").addResourceLocations(local);
+        gerador.writeString(ServletUriComponentsBuilder.fromCurrentContextPath().path(valor).toUriString());
     }
 }

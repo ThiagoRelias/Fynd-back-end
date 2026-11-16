@@ -1,38 +1,25 @@
 package fynd_api.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import fynd_api.exception.RecursoNaoEncontradoException;
+import fynd_api.model.Imagem;
+import fynd_api.repository.ImagemRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 @Service
 public class ImagemService {
 
-    private static final Map<String, String> TIPOS_PERMITIDOS = Map.of(
-            "image/png", ".png",
-            "image/jpeg", ".jpg",
-            "image/webp", ".webp",
-            "image/gif", ".gif"
-    );
+    private static final Set<String> TIPOS_PERMITIDOS = Set.of("image/png", "image/jpeg", "image/webp", "image/gif");
 
-    private final Path pasta;
+    private final ImagemRepository repository;
 
-    public ImagemService(@Value("${fynd.upload.pasta:uploads}") String pasta) {
-        this.pasta = Paths.get(pasta).toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.pasta);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Não foi possível criar a pasta de uploads", e);
-        }
+    public ImagemService(ImagemRepository repository) {
+        this.repository = repository;
     }
 
     public String salvar(MultipartFile arquivo) {
@@ -40,21 +27,25 @@ public class ImagemService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Selecione uma imagem");
         }
 
-        String extensao = TIPOS_PERMITIDOS.get(arquivo.getContentType());
-        if (extensao == null) {
+        String tipo = arquivo.getContentType();
+        if (tipo == null || !TIPOS_PERMITIDOS.contains(tipo)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A imagem deve ser PNG, JPG, WEBP ou GIF");
         }
 
-        String nome = UUID.randomUUID() + extensao;
+        Imagem imagem = new Imagem();
+        imagem.setTipo(tipo);
         try {
-            arquivo.transferTo(pasta.resolve(nome));
+            imagem.setDados(arquivo.getBytes());
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível salvar a imagem");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Não foi possível ler a imagem");
         }
-        return "/uploads/" + nome;
+
+        Imagem salva = repository.save(imagem);
+        return "/api/imagens/" + salva.getId();
     }
 
-    public Path getPasta() {
-        return pasta;
+    public Imagem buscar(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(id));
     }
 }
