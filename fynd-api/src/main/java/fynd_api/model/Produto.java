@@ -1,6 +1,8 @@
 package fynd_api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,7 +39,8 @@ public class Produto {
     private LocalDateTime dataCadastro;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(nullable = false, length = 20)
     private StatusObjeto status;
 
     @PrePersist
