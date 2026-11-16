@@ -1,8 +1,5 @@
 package fynd_api.config;
 
-import fynd_api.model.Produto;
-import fynd_api.model.StatusObjeto;
-import fynd_api.repository.ProdutoRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -10,11 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class DadosIniciais implements CommandLineRunner {
 
-    private final ProdutoRepository produtoRepository;
     private final JdbcTemplate jdbcTemplate;
 
-    public DadosIniciais(ProdutoRepository produtoRepository, JdbcTemplate jdbcTemplate) {
-        this.produtoRepository = produtoRepository;
+    public DadosIniciais(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -22,7 +17,7 @@ public class DadosIniciais implements CommandLineRunner {
     public void run(String... args) {
         ajustarColunaStatus("produto");
         ajustarColunaStatus("objeto");
-        cadastrarProdutoExemplo();
+        removerProdutoExemplo();
     }
 
     private void ajustarColunaStatus(String tabela) {
@@ -30,19 +25,7 @@ public class DadosIniciais implements CommandLineRunner {
         jdbcTemplate.update("UPDATE " + tabela + " SET status = 'AGUARDANDO_DONO' WHERE status = 'AGUARDADNDO_DONO'");
     }
 
-    private void cadastrarProdutoExemplo() {
-        if (produtoRepository.count() > 0) {
-            return;
-        }
-
-        Produto produto = new Produto();
-        produto.setNome("Item de exemplo fynd");
-        produto.setDescricao("Produto cadastrado automaticamente para demonstrar a listagem com imagem.");
-        produto.setQuantidade(1);
-        produto.setImagemUrl("/imagens/fynd-logo.svg");
-        produto.setEncontradoEm("Secretaria acadêmica");
-        produto.setCategoria("Outros");
-        produto.setStatus(StatusObjeto.AGUARDANDO_DONO);
-        produtoRepository.save(produto);
+    private void removerProdutoExemplo() {
+        jdbcTemplate.update("DELETE FROM produto WHERE nome = 'Item de exemplo fynd' AND imagem_url LIKE '/imagens/fynd-logo.%'");
     }
 }
