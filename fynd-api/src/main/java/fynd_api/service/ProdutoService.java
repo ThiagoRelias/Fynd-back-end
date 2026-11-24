@@ -7,6 +7,7 @@ import fynd_api.model.StatusObjeto;
 import fynd_api.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,9 +52,18 @@ public class ProdutoService {
         produto.setQuantidade(dados.quantidade());
         produto.setImagemUrl(caminhoLocal(dados.imagemUrl()));
         produto.setEncontradoEm(dados.encontradoEm());
+        atualizarDataEncontrado(dados, produto);
         produto.setCategoria(dados.categoria());
         produto.setStatus(dados.status());
         atualizarDataDevolucao(produto);
+    }
+
+    private void atualizarDataEncontrado(ProdutoRequestDTO dados, Produto produto) {
+        if (dados.dataEncontrado() != null) {
+            produto.setDataEncontrado(dados.dataEncontrado());
+        } else if (produto.getDataEncontrado() == null) {
+            produto.setDataEncontrado(LocalDate.now());
+        }
     }
 
     private void atualizarDataDevolucao(Produto produto) {

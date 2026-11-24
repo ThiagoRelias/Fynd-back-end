@@ -3,6 +3,8 @@ package fynd_api.dto;
 import fynd_api.model.StatusObjeto;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 public record ProdutoRequestDTO(
 
         @NotBlank(message = "O nome é obrigatório")
@@ -20,6 +22,9 @@ public record ProdutoRequestDTO(
 
         @NotBlank(message = "Encontrado em é obrigatório")
         String encontradoEm,
+
+        @PastOrPresent(message = "A data em que foi encontrado não pode ser no futuro")
+        LocalDate dataEncontrado,
 
         @NotBlank(message = "A categoria é obrigatória")
         String categoria,
