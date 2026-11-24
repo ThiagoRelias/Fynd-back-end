@@ -8,6 +8,7 @@ import org.hibernate.type.SqlTypes;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,6 +35,8 @@ public class Produto {
 
     @Column(nullable = false)
     private String encontradoEm;
+
+    private LocalDate dataEncontrado;
 
     @Column(nullable = false)
     private String categoria;

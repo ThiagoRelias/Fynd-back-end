@@ -22,7 +22,6 @@ public class DadosIniciais implements CommandLineRunner {
     public void run(String... args) {
         ajustarColunaStatus("produto");
         ajustarColunaStatus("objeto");
-        removerExemplosSemImagem();
 
         cadastrarExemplo(
                 "Produto de teste 1",
@@ -60,10 +59,6 @@ public class DadosIniciais implements CommandLineRunner {
     private void ajustarColunaStatus(String tabela) {
         jdbcTemplate.execute("ALTER TABLE " + tabela + " MODIFY status VARCHAR(20) NOT NULL");
         jdbcTemplate.update("UPDATE " + tabela + " SET status = 'AGUARDANDO_DONO' WHERE status = 'AGUARDADNDO_DONO'");
-    }
-
-    private void removerExemplosSemImagem() {
-        jdbcTemplate.update("DELETE FROM produto WHERE imagem_url = '' AND nome IN ('Item de exemplo fynd', 'Fones de ouvido sem fio pretos')");
     }
 
     private void cadastrarExemplo(String nome, String descricao, String encontradoEm, String categoria, String imagemUrl) {
