@@ -12,7 +12,7 @@ public class UploadConfig extends JsonSerializer<String> {
 
     @Override
     public void serialize(String valor, JsonGenerator gerador, SerializerProvider provider) throws IOException {
-        if (valor.startsWith("http") || RequestContextHolder.getRequestAttributes() == null) {
+        if (valor.isBlank() || valor.startsWith("http") || RequestContextHolder.getRequestAttributes() == null) {
             gerador.writeString(valor);
             return;
         }
