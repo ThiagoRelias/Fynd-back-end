@@ -46,6 +46,8 @@ public class Produto {
     @Column(nullable = false, length = 20)
     private StatusObjeto status;
 
+    private LocalDateTime dataDevolucao;
+
     @PrePersist
     public void aoCriar() {
         this.dataCadastro = LocalDateTime.now();

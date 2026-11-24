@@ -3,9 +3,11 @@ package fynd_api.service;
 import fynd_api.dto.ProdutoRequestDTO;
 import fynd_api.exception.RecursoNaoEncontradoException;
 import fynd_api.model.Produto;
+import fynd_api.model.StatusObjeto;
 import fynd_api.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,6 +53,17 @@ public class ProdutoService {
         produto.setEncontradoEm(dados.encontradoEm());
         produto.setCategoria(dados.categoria());
         produto.setStatus(dados.status());
+        atualizarDataDevolucao(produto);
+    }
+
+    private void atualizarDataDevolucao(Produto produto) {
+        if (produto.getStatus() == StatusObjeto.DEVOLVIDO) {
+            if (produto.getDataDevolucao() == null) {
+                produto.setDataDevolucao(LocalDateTime.now());
+            }
+        } else {
+            produto.setDataDevolucao(null);
+        }
     }
 
     private String caminhoLocal(String url) {
