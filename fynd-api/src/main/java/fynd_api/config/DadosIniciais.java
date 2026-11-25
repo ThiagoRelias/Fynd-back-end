@@ -3,25 +3,37 @@ package fynd_api.config;
 import fynd_api.model.Produto;
 import fynd_api.model.StatusObjeto;
 import fynd_api.repository.ProdutoRepository;
+import fynd_api.service.CategoriaService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class DadosIniciais implements CommandLineRunner {
 
+    private static final List<String> CATEGORIAS_FIXAS = List.of(
+            "Eletrônicos", "Documentos", "Roupas", "Acessórios",
+            "Chaves", "Bolsas e mochilas", "Outros"
+    );
+
     private final JdbcTemplate jdbcTemplate;
     private final ProdutoRepository produtoRepository;
+    private final CategoriaService categoriaService;
 
-    public DadosIniciais(JdbcTemplate jdbcTemplate, ProdutoRepository produtoRepository) {
+    public DadosIniciais(JdbcTemplate jdbcTemplate, ProdutoRepository produtoRepository, CategoriaService categoriaService) {
         this.jdbcTemplate = jdbcTemplate;
         this.produtoRepository = produtoRepository;
+        this.categoriaService = categoriaService;
     }
 
     @Override
     public void run(String... args) {
         ajustarColunaStatus("produto");
         ajustarColunaStatus("objeto");
+
+        CATEGORIAS_FIXAS.forEach(categoriaService::buscarOuCriar);
 
         cadastrarExemplo(
                 "Produto de teste 1",

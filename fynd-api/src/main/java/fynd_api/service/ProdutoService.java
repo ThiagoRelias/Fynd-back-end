@@ -15,9 +15,11 @@ import java.util.List;
 public class ProdutoService {
 
     private final ProdutoRepository repository;
+    private final CategoriaService categoriaService;
 
-    public ProdutoService(ProdutoRepository repository) {
+    public ProdutoService(ProdutoRepository repository, CategoriaService categoriaService) {
         this.repository = repository;
+        this.categoriaService = categoriaService;
     }
 
     public List<Produto> listar() {
@@ -53,7 +55,7 @@ public class ProdutoService {
         produto.setImagemUrl(caminhoLocal(dados.imagemUrl()));
         produto.setEncontradoEm(dados.encontradoEm());
         atualizarDataEncontrado(dados, produto);
-        produto.setCategoria(dados.categoria());
+        produto.setCategoria(categoriaService.buscarOuCriar(dados.categoria()).getNome());
         produto.setStatus(dados.status());
         atualizarDataDevolucao(produto);
     }
