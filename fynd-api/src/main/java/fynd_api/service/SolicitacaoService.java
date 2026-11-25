@@ -1,6 +1,7 @@
 package fynd_api.service;
 
 import fynd_api.dto.SolicitacaoRequestDTO;
+import fynd_api.exception.RecursoNaoEncontradoException;
 import fynd_api.model.Produto;
 import fynd_api.model.Solicitacao;
 import fynd_api.repository.SolicitacaoRepository;
@@ -37,5 +38,12 @@ public class SolicitacaoService {
     public List<Solicitacao> listarPorProduto(Long produtoId) {
         produtoService.buscarPorId(produtoId);
         return repository.findByProdutoIdOrderByDataSolicitacaoDesc(produtoId);
+    }
+
+    public void excluir(Long id) {
+        if (!repository.existsById(id)) {
+            throw new RecursoNaoEncontradoException(id);
+        }
+        repository.deleteById(id);
     }
 }
