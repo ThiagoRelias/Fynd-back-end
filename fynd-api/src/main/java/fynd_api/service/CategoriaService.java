@@ -21,11 +21,15 @@ public class    CategoriaService {
     }
 
     public Categoria criar(CategoriaRequestDTO dados) {
-        String nome = dados.nome().trim();
-        return repository.findByNomeIgnoreCase(nome)
+        return buscarOuCriar(dados.nome());
+    }
+
+    public Categoria buscarOuCriar(String nome) {
+        String nomeLimpo = nome.trim();
+        return repository.findByNomeIgnoreCase(nomeLimpo)
                 .orElseGet(() -> {
                     Categoria categoria = new Categoria();
-                    categoria.setNome(nome);
+                    categoria.setNome(nomeLimpo);
                     return repository.save(categoria);
                 });
     }
