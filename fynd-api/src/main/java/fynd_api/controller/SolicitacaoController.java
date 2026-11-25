@@ -40,4 +40,11 @@ public class SolicitacaoController {
     public List<Solicitacao> listarPorProduto(@PathVariable Long id) {
         return service.listarPorProduto(id);
     }
+
+    @DeleteMapping("/solicitacoes/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Exclui uma solicitação")
+    public void excluir(@PathVariable Long id) {
+        service.excluir(id);
+    }
 }
