@@ -25,7 +25,7 @@ public class    CategoriaService {
     }
 
     public Categoria buscarOuCriar(String nome) {
-        String nomeLimpo = nome.trim();
+        String nomeLimpo = nome.trim().toLowerCase();
         return repository.findByNomeIgnoreCase(nomeLimpo)
                 .orElseGet(() -> {
                     Categoria categoria = new Categoria();
